@@ -92,3 +92,15 @@ class QuestionIndexViewTests(TestCase):
             response.context["latest_question_list"],
             [question],
         )
+
+    def test_two_past_questions(self):
+        """
+        The questions index page may display multiple questions.
+        """
+        question1 = QuestionModelTests.create_question(question_text="Past question 1.", days=-30)
+        question2 = QuestionModelTests.create_question(question_text="Past question 2.", days=-5)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerySetEqual(
+            response.context["latest_question_list"],
+            [question2, question1],
+        )
